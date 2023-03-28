@@ -67,7 +67,7 @@ app.put('/journeys/:journey_id', (req, res) => {
   });
 });
 
-// Delete a journey
+// Delete a jouerney
 app.delete('/journeys/:journey_id', (req, res) => {
   const { journey_id } = req.params;
   const sql = 'DELETE FROM journey WHERE journey_id = ?';
