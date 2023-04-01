@@ -4,10 +4,11 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 
 const app = express();
-const port = 3000;
+//const port = 3306;
+const port = 6000;
 
 const db = mysql.createConnection({
-  host: 'http://fastmove-db.ct3qzhwiht7m.ap-southeast-2.rds.amazonaws.com/',
+  host: 'fastmove-db.ct3qzhwiht7m.ap-southeast-2.rds.amazonaws.com',
   user: 'admin',
   password: 'FastmoveIN2900',
   database: 'fastmove'
@@ -20,6 +21,10 @@ db.connect((err) => {
   }
   console.log('Connected to MySQL database.');
 });
+
+var database_connection_status='';
+
+
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -81,6 +86,3 @@ app.delete('/journeys/:journey_id', (req, res) => {
   });
 });
 
-app.listen(port, () => {
-  console.log(`Server listening on port ${port}.`);
-});
