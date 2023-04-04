@@ -81,11 +81,4 @@ app.put('/api/conductors/:id', (req, res) => {
   });
 });
 
-// Delete a conductor
-/*app.delete('/api/conductors/:id', (req, res) => {
-  const { id } = req.params;
-  pool.query('DELETE FROM conductor WHERE conductor_id = ?', [id], (err, result) => {
-    if (err) {
-      console.error(err);
-      res.status(500).send('Internal server error');
-    } */
+
