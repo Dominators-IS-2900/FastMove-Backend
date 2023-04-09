@@ -23,9 +23,6 @@ db.connect((err) => {
 });
 
 var database_connection_status='';
-
-
-
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors());
