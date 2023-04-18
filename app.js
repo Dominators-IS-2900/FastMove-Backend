@@ -79,8 +79,8 @@ app.post("/addBus", (req, res) => {
   console.log(values)
 });
 // Get all journeys
-app.get('/journeys', (req, res) => {
-    const sql = 'SELECT * FROM journey';
+app.get('/journey', (req, res) => {
+    const sql = "SELECT * FROM fastmove.journey";
     db.query(sql, (err, result) => {
       if (err) {
         console.log(err);
@@ -196,11 +196,6 @@ app.get('/api/conductors', (req, res) => {
       }
     });
   });
-  
-  
-
-
-
 //get inquiries from bus owner
 app.post("/submit-inquiry", (req, res) => {
   const s = "INSERT INTO inquiry_bus_owner(`type_of_issue`,`complain`) VALUES (?)";  
