@@ -178,4 +178,73 @@ app.put('/fare_rates/:fare_rate_id', (req, res) => {
     }
   );
 });
+// Get all profiles
+app.get('/profiles', (req, res) => {
+  const sql = 'SELECT * FROM conductor_profiles';
+  db.query(sql, (err, result) => {
+    if (err) throw err;
+    res.send(result);
+  });
+});
 
+// Get a profile by ID
+app.get('/profiles/:id', (req, res) => {
+  const id = req.params.id;
+  const sql = 'SELECT * FROM conductor_profiles WHERE conductor_id = ?';
+  db.query(sql, [id], (err, result) => {
+    if (err) throw err;
+    res.send(result[0]);
+  });
+});
+
+// Create a new profile
+app.post('/profiles', (req, res) => {
+  const { conductor_id, user_name, password, mobile_number, email, nic_scan_copy } = req.body;
+  const sql = 'INSERT INTO conductor_profiles (conductor_id, user_name, password, mobile_number, email, nic_scan_copy) VALUES (?, ?, ?, ?, ?, ?)';
+  db.query(sql, [conductor_id, user_name, password, mobile_number, email, nic_scan_copy], (err, result) => {
+    if (err) throw err;
+    res.send('Profile created successfully!');
+  });
+});
+
+// Update a profile
+app.put('/profiles/:id', (req, res) => {
+  const id = req.params.id;
+  const { user_name, password, mobile_number, email, nic_scan_copy } = req.body;
+  const sql = 'UPDATE conductor_profiles SET user_name = ?, password = ?, mobile_number = ?, email = ?, nic_scan_copy = ? WHERE conductor_id = ?';
+  db.query(sql, [user_name, password, mobile_number, email, nic_scan_copy, id], (err, result) => {
+    if (err) throw err;
+    res.send('Profile updated successfully!');
+  });
+});
+
+// Delete a profile
+app.delete('/profiles/:id', (req, res) => {
+  const id = req.params.id;
+  const sql = 'DELETE FROM conductor_profiles WHERE conductor_id = ?';
+  db.query(sql, [id], (err, result) => {
+    if (err) throw err;
+    res.send('Profile deleted successfully!');
+  });
+});
+// handle POST request to submit form data
+app.post('/submit-form', upload.single('nic_scan_copy'), (req, res) => {
+  // extract form data from request body
+  const { email, first_name, last_name, address, tp, account_no } = req.body;
+  // extract file information from multer's file object
+  const { originalname, filename } = req.file;
+
+  // build SQL query to insert form data into database
+  const sql = 'INSERT INTO passengers (email, first_name, last_name, address, tp, account_no, nic_scan_copy_name, nic_scan_copy_path) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+  const values = [email, first_name, last_name, address, tp, account_no, originalname, `uploads/${filename}`];
+
+  // execute SQL query to insert form data into database
+  connection.query(sql, values, (error, results, fields) => {
+    if (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Failed to insert data into database.' });
+    } else {
+      res.status(200).json({ message: 'Form data submitted successfully.' });
+    }
+  });
+});
