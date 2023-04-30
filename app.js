@@ -60,7 +60,7 @@ app.get("/busDetails", (req, res) => {
 
 //register new bus from frontend and send data to database
 app.post("/addBus", (req, res) => {
-  const q = "INSERT INTO Bus_Registration(`Bus_No`,`Bus_type`,`No_ofSeats`,`Bus_Lisence_startDate`,`Bus_Lisence_expireDate`) VALUES (?)";
+  const q = "INSERT INTO Bus_Registration(`Bus_No`,`Bus_type`,`No_ofSeats`,`Bus_Lisence_startDate`,`Bus_Lisence_expireDate`,`User_Email`) VALUES (?)";
     const startDate = req.body.Bus_Lisence_startDate;
   const expireDate = new Date(startDate); //calculate end date after one year from registered date
   expireDate.setMonth(expireDate.getMonth() + 12);
@@ -70,6 +70,7 @@ app.post("/addBus", (req, res) => {
     req.body.Bus_type,
     req.body.No_ofSeats,
     req.body.Bus_Lisence_startDate,
+    req.body.User_Email,
     expireDate.toISOString().slice(0, 19).replace('T', ' '),// Convert date to MySQL datetime format
   ];
   connection.query(q,[values], (err, data) => {
@@ -82,8 +83,9 @@ app.post("/addBus", (req, res) => {
 
 //get inquiries from bus owner
 app.post("/submit-inquiry", (req, res) => {
-  const s = "INSERT INTO inquiry_bus_owner(`type_of_issue`,`complain`) VALUES (?)";  
+  const s = "INSERT INTO inquiry_bus_owner(`email`,`type_of_issue`,`complain`) VALUES (?)";  
   const values = [
+    req.body.email,
     req.body.type_of_issue,
     req.body.complain,
   ];
