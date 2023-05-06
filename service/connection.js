@@ -2,9 +2,9 @@
 var mysql = require('mysql');
 
 var connection = mysql.createConnection({
-  host: "fastmove-db.ct3qzhwiht7m.ap-southeast-2.rds.amazonaws.com",
+  host: "fastmove.cyltlmrg7fka.ap-southeast-2.rds.amazonaws.com",
   user: "admin",
-  password: "FastmoveIN2900",
+  password: "Fastmove1234",
   database: "fastmove",
 });
 connection.connect(function(err) {
@@ -12,5 +12,4 @@ connection.connect(function(err) {
     console.log("connected to database")
   });
 
-
-module.exports = connection
+module.exports = connection
