@@ -62,7 +62,7 @@ async function verifyUser(req, res, next) {
 
 async function register(req, res) {
   const data = req.body;
- console.log(data)
+
  
   const hashedPassword = await bcrypt.hash(data.password, 10);    
   var table=null;
@@ -115,7 +115,6 @@ const user_register_sql =
 
 async function login(req, res) {
   const data = req.body;
- console.log(data)
 
   var table=null;
   
@@ -186,7 +185,7 @@ async function getUser(req, res) {
   const value= req.method == "GET" ? req.query : req.body;
   const email=value.username;
  
-  
+  //console.log(value)
   var table=null;
   
 
@@ -203,6 +202,7 @@ async function getUser(req, res) {
   
   try {
     if (!email) return res.status(501).send({ error: "Invalid email" });
+    
     const sql =
       `SELECT * from ${table} where Email =?`;
     connection.query(sql,email, function (err, result, fields) {
@@ -213,6 +213,7 @@ async function getUser(req, res) {
         if (!result.length > 0) {
           return res.status(501).send({ error: "Could't find a user" });
         } else {
+          //console.log(result)
           const { Password, ...rest } = result[0];
 
           return res.status(201).send(rest);
@@ -320,6 +321,40 @@ async function registerValidate(req, res) {
   }
 }
 
+async function updateUser(req, res) {
 
-module.exports = { verifyUser, getUser, register, login, resetPassword, generateOTP,verifyOTP,  createResetSession, registerValidate};
+  let table = null;
+  const user=req.user;
+
+
+  if (user.user_type == 'Passenger') {
+    table = "fastmove.passenger";
+  } else if (user.user_type == "bus owner") {
+    table = "fastmove.busowner";
+  } else if (user.user_type == "conductor") {
+    table = "fastmove.conductor";
+  }
+  try {
+    
+      const body = req.body;
+      
+
+      const updateQuery = `UPDATE ${table} SET FName = ?, LName = ? ,Contact_No=? , address=? WHERE Email = ?`;
+
+      const values=[body.firstName, body.lastName, body.mobile,body.address, body.email];
+
+      connection.query(updateQuery, values, function (error, results) {
+        if (error) throw error;
+
+        return res.status(201).send({ msg: 'Record Updated...!' });
+      });
+    
+    }
+    catch (error) {
+    return res.status(401).send({ error });
+  }
+}
+
+
+module.exports = { verifyUser, getUser, register, login, resetPassword, generateOTP,verifyOTP,  createResetSession, registerValidate, updateUser};
 

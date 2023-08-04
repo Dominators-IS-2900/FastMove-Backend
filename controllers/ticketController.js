@@ -20,19 +20,29 @@ exports.generateTicket = async (req, res) => {
 //retrieve ticket
 exports.getTicket = async (req, res) => {
   const { ticketCode } = req.params;
-  console.log(ticketCode);
+  
 
   try {
     const query = `SELECT * FROM tickets WHERE ticket_code = ?`;
     const values = [ticketCode];
-    const [rows] = await db.query(query, values);
-    if (rows.length === 0) {
-      res.status(404).json({ error: "Ticket not found." });
-    } else {
-      const ticket = rows[0];
-      res.status(200).json({ ticket });
-    }
+    
+
+    db.query(query,values,(err, data) => {
+      if (err) {
+        return res.status(500).json(err);
+      }
+    
+      if (data.length === 0) {
+        return res.status(404).json({ error: "Ticket not found." });
+      }
+    
+      return res.status(200).json(data);
+      
+    });
+    
+ 
   } catch (error) {
+    console.log(error)
     res.status(500).json({ error: "Failed to retrieve ticket." });
   }
 };

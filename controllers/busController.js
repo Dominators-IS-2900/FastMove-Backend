@@ -11,32 +11,36 @@ exports.getBus=async (req, res) => {
 
 
   
-//register new bus 
-exports.addBus=async (req, res) => {
-    const data=req.body;
-     console.log(data)
-      const q = "INSERT INTO fastmove.Bus_Registration(`Bus_No`,`Bus_type`,`No_ofSeats`,`Bus_Lisence_startDate`,`Bus_Lisence_expireDate`) VALUES (?,?,?,?, ?)";
-    
-        const startDate = req.body.Bus_Lisence_startDate;
-      const expireDate = new Date(startDate); //calculate end date after one year from registered date
-      expireDate.setMonth(expireDate.getMonth() + 12);
-      
-    
-      const values = [
-        req.body.Bus_No,
-        req.body.Bus_type,
-        req.body.No_ofSeats,
-        req.body.Bus_Lisence_startDate,
-        req.body.User_Email,
-        expireDate
-      ];
-      connection.query(q,values, (err, data) => {
-    
-        if (err) return res.json(err);
-        return res.json("bus has been added successfully");
-      });
-      console.log(values)
-    };
+  exports.addBus = async (req, res) => {
+    const data = req.body;
+    console.log(data);
+    const q = "INSERT INTO fastmove.Bus_Registration(`Bus_No`,`Email`,`Bus_type`,`No_ofSeats`,`Bus_Lisence_startDate`,`Bus_Lisence_expireDate`, `BusLisence_scancopy`) VALUES (?,?,?,?,?,?,?)";
+  
+    const startDate = new Date(req.body.Bus_Lisence_startDate);
+    const expireDate = new Date(startDate);
+    expireDate.setMonth(expireDate.getMonth() + 12);
+  
+    const values = [
+      req.body.Bus_No,
+      req.body.UserEmail,
+      req.body.Bus_type,
+      req.body.No_ofSeats,
+      startDate.toISOString().slice(0, 10),
+      expireDate.toISOString().slice(0, 10),
+      req.body.BusLisence_scancopy
+    ];
+  
+    connection.query(q, values, (err, data) => {
+      if (err) {
+        console.log(err);
+        return res.json(err);
+      }
+      return res.json("Bus has been added successfully");
+    });
+  
+    console.log(values);
+  };
+  
     
 
     //update bus lisence
